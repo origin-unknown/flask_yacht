@@ -1,2 +1,4 @@
-flask
 blueprint
+flask
+flask-jwt-extended
+webargs

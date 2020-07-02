@@ -8,7 +8,7 @@ from flask import (
 )
 
 def create_app(env=os.getenv('FLASK_ENV', 'production')):
-    app = Flask(__name__, 
+    app = Flask(__name__,
         instance_relative_config=True,
     )
     app.config.from_mapping(
