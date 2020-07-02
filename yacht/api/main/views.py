@@ -57,3 +57,27 @@ def login(username, password):
     # TODO Store the tokens to database
 
     return jsonify({'access_token': acc_token, 'refresh_token': ref_token}), 200
+
+@blueprint.route('/refresh', methods=['POST'])
+def refresh():
+    '''curl -H "Authorization: Bearer $REFRESH" -X POST http://127.0.0.1:5000/api/refresh'''
+
+    current_user = get_jwt_identity()
+    acc_token = create_access_token(identity=current_user, fresh=False)
+    # TODO Store the token to database
+    return jsonify({'access_token': acc_token}), 201
+
+@blueprint.route('/secure')
+@jwt_required
+def secure():
+    '''curl -H "Authorization: Bearer $ACCESS_TOKEN" http://127.0.0.1:5000/api/secure'''
+    current_user = get_jwt_identity()
+    return jsonify(logged_as=current_user), 200
+
+@blueprint.route('/secure-opt')
+@jwt_optional
+def secure_opt():
+    '''curl http://127.0.0.1:5000/api/secure-opt'''
+    current_user = get_jwt_identity()
+    if current_user: return jsonify(logged_as=current_user), 200
+    else: return jsonify(logged_as='anonymous'), 200
