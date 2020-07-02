@@ -3,7 +3,7 @@ from flask import Blueprint
 from flask import (
     abort,
     jsonify,
-    make_response, 
+    make_response,
     request
 )
 
@@ -16,3 +16,7 @@ blueprint = Blueprint(
 @blueprint.route('/')
 def index():
     return jsonify({ 'message': 'Hello API.'})
+
+@blueprint.route('/sample')
+def sample():
+    return jsonify({ 'message': 'Hello from Flask API.'})
