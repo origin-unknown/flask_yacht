@@ -81,3 +81,21 @@ def secure_opt():
     current_user = get_jwt_identity()
     if current_user: return jsonify(logged_as=current_user), 200
     else: return jsonify(logged_as='anonymous'), 200
+
+
+# errors raised by webargs
+#
+# @blueprint.errorhandler(MethodNotAllowed)
+# def handle_405(e):
+#     d = {
+#         'code': 405,
+#         'message': 'Method Not Allowed',}
+#     return make_response(jsonify(d), 405)
+#
+# @blueprint.errorhandler(UnprocessableEntity)
+# def handle_422(e):
+#     print(e)
+#     d = {
+#         'code': 422,
+#         'message': 'Unprocessable Entity',}
+#     return make_response(jsonify(d), 422)
