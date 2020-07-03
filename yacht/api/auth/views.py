@@ -59,6 +59,7 @@ def login(username, password):
     return jsonify({'access_token': acc_token, 'refresh_token': ref_token}), 200
 
 @blueprint.route('/refresh', methods=['POST'])
+@jwt_refresh_token_required
 def refresh():
     '''curl -H "Authorization: Bearer $REFRESH" -X POST http://127.0.0.1:5000/api/refresh'''
 

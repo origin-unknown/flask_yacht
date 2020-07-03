@@ -2,3 +2,5 @@ blueprint
 flask
 flask-jwt-extended
 webargs
+
+pytest
