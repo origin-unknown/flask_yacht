@@ -29,9 +29,10 @@ def create_app(env=os.getenv('FLASK_ENV', 'production')):
     return app
 
 def register_blueprints(app):
+    from .api.auth import create_module as api_auth_create_module
     from .api.main import create_module as api_main_create_module
+    api_auth_create_module(app, url_prefix='/api')
     api_main_create_module(app, url_prefix='/api')
-    pass
 
 def register_endpoints(app):
     @app.route('/api/')
