@@ -49,4 +49,16 @@ def create(args):
     db.session.commit()
     template_schema = TemplateSchema()
     data = template_schema.dump(template)
+    return jsonify({ 'data': data })
+
+@blueprint.route('/<int:id>', methods=['DELETE'])
+# perhaps use webargs for id 
+def delete(id):
+    '''curl --header "Content-Type: application/json" \
+    -X "DELETE" \
+    http://127.0.0.1:5000/api/templates/2
+    '''
+    template = Template.query.get_or_404(id)
+    template_schema = TemplateSchema()
+    data = template_schema.dump(template)
     return jsonify({ 'data': data})
