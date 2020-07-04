@@ -40,7 +40,7 @@ def index():
 def create(args):
     '''curl --header "Content-Type: application/json" \
       --request POST \
-      --data '{"name":"First Template","url":"https://host.local/template.json"}' \
+      --data '{"title":"First Template","url":"https://host.local/template.json"}' \
       http://127.0.0.1:5000/api/templates/
     '''
     template = Template(**args)
@@ -52,12 +52,13 @@ def create(args):
     return jsonify({ 'data': data })
 
 @blueprint.route('/<int:id>', methods=['DELETE'])
-# perhaps use webargs for id 
+# perhaps use webargs for id
 def delete(id):
     '''curl --header "Content-Type: application/json" \
     -X "DELETE" \
     http://127.0.0.1:5000/api/templates/2
     '''
+    # check error code and return json error
     template = Template.query.get_or_404(id)
     template_schema = TemplateSchema()
     data = template_schema.dump(template)

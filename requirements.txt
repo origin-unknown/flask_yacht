@@ -1,7 +1,9 @@
 blueprint
 flask
+# flask-classful
 flask-jwt-extended
 flask-marshmallow
+flask-migrate
 flask-sqlalchemy
 marshmallow-sqlalchemy
 webargs

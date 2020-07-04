@@ -2,6 +2,7 @@
 from ... import ma
 
 class TemplateSchema(ma.SQLAlchemySchema):
+    # perhapse use auto_field
     id = ma.Int(dump_only=True)
-    name = ma.Str()
+    title = ma.Str()
     url = ma.Url()

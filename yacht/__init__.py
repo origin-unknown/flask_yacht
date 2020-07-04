@@ -8,9 +8,11 @@ from flask import (
 )
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from flask_migrate import Migrate
 
 db = SQLAlchemy()
 ma = Marshmallow()
+migrate = Migrate()
 
 def create_app(env=os.getenv('FLASK_ENV', 'production')):
     app = Flask(__name__,
@@ -29,6 +31,7 @@ def create_app(env=os.getenv('FLASK_ENV', 'production')):
 
     db.init_app(app)
     ma.init_app(app)
+    migrate.init_app(app, db)
 
     register_blueprints(app)
     register_endpoints(app)
@@ -44,6 +47,6 @@ def register_blueprints(app):
     api_docker_templates_create_module(app, url_prefix='/api/templates')
 
 def register_endpoints(app):
-    @app.route('/api/')
+    @app.route('/')
     def index():
-        return jsonify({ 'message': 'Hello World' })
+        return 'Hello from yacht'
