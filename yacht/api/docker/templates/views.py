@@ -17,6 +17,7 @@ from flask_jwt_extended import (
     jwt_required,
     jwt_optional
 )
+from sqlalchemy.exc import IntegrityError
 from webargs import fields, validate
 from webargs.flaskparser import use_args, use_kwargs
 from werkzeug.exceptions import MethodNotAllowed, UnprocessableEntity
@@ -29,11 +30,23 @@ blueprint = Blueprint(
 )
 
 @blueprint.route('/')
+# @use_kwargs({'per_page': fields.Int(missing=10)}, locations=('query',))
+# ...
 def index():
     templates = Template.query.all()
     templates_schema = TemplateSchema(many=True)
     data = templates_schema.dump(templates, many=True)
     return jsonify({ 'data': data })
+
+@blueprint.route('/<int:id>')
+def show(id):
+    try:
+        template = Template.query.get(id)
+        template_schema = TemplateSchema()
+        data = template_schema.dump(template)
+        return jsonify({ 'data': data })
+    except IntegrityError as err:
+        abort(400, { 'error': 'Bad Request' })
 
 @blueprint.route('/', methods=['POST'])
 @use_args(TemplateSchema(), location='json')
@@ -44,9 +57,14 @@ def create(args):
       http://127.0.0.1:5000/api/templates/
     '''
     template = Template(**args)
-    # TODO raises IntegrityError on duplicates (uniqueness)
-    db.session.add(template)
-    db.session.commit()
+    try:
+        db.session.add(template)
+        db.session.commit()
+    except IntegrityError as err:
+        # TODO raises IntegrityError on duplicates (uniqueness)
+        #       status
+        pass
+
     template_schema = TemplateSchema()
     data = template_schema.dump(template)
     return jsonify({ 'data': data })
@@ -59,7 +77,13 @@ def delete(id):
     http://127.0.0.1:5000/api/templates/2
     '''
     # check error code and return json error
-    template = Template.query.get_or_404(id)
+    try:
+        template = Template.query.get(id)
+        db.session.delete(template)
+        db.session.commit()
+    except IntegrityError as err:
+        abort(400, { 'error': 'Bad Request' })
+
     template_schema = TemplateSchema()
     data = template_schema.dump(template)
     return jsonify({ 'data': data})
