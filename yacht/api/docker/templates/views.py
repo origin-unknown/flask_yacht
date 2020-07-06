@@ -29,6 +29,10 @@ blueprint = Blueprint(
     url_prefix='/api/docker/templates'
 )
 
+
+# endpoint: index
+#  methods: GET
+#   errors: 200 (OK) | 404 (Not Found)
 @blueprint.route('/')
 # @use_kwargs({'per_page': fields.Int(missing=10)}, locations=('query',))
 # ...
@@ -38,18 +42,22 @@ def index():
     data = templates_schema.dump(templates, many=True)
     return jsonify({ 'data': data })
 
+# endpoint: show
+#  methods: GET
+#   errors: 200 (OK) | 404 (Not Found)
 @blueprint.route('/<int:id>')
 def show(id):
     try:
-        template = Template.query.get(id)
-        if not template:
-            abort(404, { 'error': 'Not Found' })
+        template = Template.query.get_or_404(id)
         template_schema = TemplateSchema()
         data = template_schema.dump(template)
         return jsonify({ 'data': data })
     except IntegrityError as err:
         abort(400, { 'error': 'Bad Request' })
 
+# endpoint: create
+#  methods: POST
+#   errors: 201 (Created) | [200 (OK) | 204 (No Content)] | 400 (Bad Request)
 @blueprint.route('/', methods=['POST'])
 @use_args(TemplateSchema(), location='json')
 def create(args):
@@ -71,6 +79,16 @@ def create(args):
     data = template_schema.dump(template)
     return jsonify({ 'data': data })
 
+# endpoint: edit
+#  methods: PUT
+#   errors: 201 (Created) | [200 (OK) | 204 (No Content)] | 409 (Conflict)
+# endpoint: update
+#  methods: PATCH
+#   errors: ... 400 (Bad Request) | 409 (Conflict) | 415 (Unsupported Media Type)
+
+# endpoint: delete/destroy
+#  methods: DELETE (optional: POST)
+#   errors: 204 (No Content) | 404 (Not Found)
 @blueprint.route('/<int:id>', methods=['DELETE'])
 # perhaps use webargs for id
 def delete(id):
@@ -80,7 +98,7 @@ def delete(id):
     '''
     # check error code and return json error
     try:
-        template = Template.query.get(id)
+        template = Template.query.get_or_404(id)
         db.session.delete(template)
         db.session.commit()
     except IntegrityError as err:
