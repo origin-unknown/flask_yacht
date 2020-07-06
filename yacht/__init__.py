@@ -49,4 +49,4 @@ def register_blueprints(app):
 def register_endpoints(app):
     @app.route('/')
     def index():
-        return 'Hello from yacht'
+        return '<center><a href="http://127.0.0.1:8080/">Vue-Yacht</a></center><iframe src="http://127.0.0.1:8080/" style="display: block; background: #000; border: none; height: 100vh; width: 100vw;"></iframe>'

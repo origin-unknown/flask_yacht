@@ -42,6 +42,8 @@ def index():
 def show(id):
     try:
         template = Template.query.get(id)
+        if not template:
+            abort(404, { 'error': 'Not Found' })
         template_schema = TemplateSchema()
         data = template_schema.dump(template)
         return jsonify({ 'data': data })
