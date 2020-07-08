@@ -17,6 +17,8 @@ from flask_jwt_extended import (
     jwt_required,
     jwt_optional
 )
+from datetime import datetime
+from sqlalchemy.orm.session import make_transient
 from sqlalchemy.exc import IntegrityError
 from webargs import fields, validate
 from webargs.flaskparser import use_args, use_kwargs
@@ -107,3 +109,29 @@ def delete(id):
     template_schema = TemplateSchema()
     data = template_schema.dump(template)
     return jsonify({ 'data': data})
+
+# ---
+
+@blueprint.route('/<int:id>/refresh', methods=['POST'])
+def refresh(id):
+    template = Template.query.get_or_404(id)
+    # ...
+
+    db.session.delete(template)
+    db.session.commit()
+
+    make_transient(template)
+    template.updated_at = datetime.utcnow()
+    # template.items = items
+
+    try:
+        db.session.add(template)
+        db.session.commit()
+        print("Template \"" + template.title + "\" updated successfully.")
+    except Exception as exc:
+        db.session.rollback()
+        raise
+
+    template_schema = TemplateSchema()
+    data = template_schema.dump(template)
+    return jsonify({ 'data': data })
