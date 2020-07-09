@@ -14,7 +14,7 @@ from yacht.api.docker.models import Template
 
 # revision identifiers, used by Alembic.
 revision = 'a6b25d7471c8'
-down_revision = '4f11161cb5a8'
+down_revision = 'ffb46bba46c4'
 branch_labels = None
 depends_on = None
 

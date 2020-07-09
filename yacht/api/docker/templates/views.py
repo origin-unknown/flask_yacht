@@ -1,7 +1,9 @@
 from .... import db
 from ..models import (
-    Template
+    Template,
+    TemplateItem
 )
+from ..utils import conv_ports2dict
 from ..schemes import (
     TemplateSchema
 )
@@ -18,8 +20,10 @@ from flask_jwt_extended import (
     jwt_optional
 )
 from datetime import datetime
+import json
 from sqlalchemy.orm.session import make_transient
 from sqlalchemy.exc import IntegrityError
+import urllib.request
 from webargs import fields, validate
 from webargs.flaskparser import use_args, use_kwargs
 from werkzeug.exceptions import MethodNotAllowed, UnprocessableEntity
@@ -114,23 +118,54 @@ def delete(id):
 
 @blueprint.route('/<int:id>/refresh', methods=['POST'])
 def refresh(id):
+    '''curl --header "Content-Type: application/json" \
+      --request POST \
+      http://127.0.0.1:5000/api/templates/1/refresh
+    '''
     template = Template.query.get_or_404(id)
-    # ...
 
-    db.session.delete(template)
-    db.session.commit()
-
-    make_transient(template)
-    template.updated_at = datetime.utcnow()
-    # template.items = items
-
+    items = []
     try:
-        db.session.add(template)
-        db.session.commit()
-        print("Template \"" + template.title + "\" updated successfully.")
+        with urllib.request.urlopen(template.url) as fp:
+            for entry in json.load(fp):
+
+                ports = conv_ports2dict(entry.get('ports', []))
+
+                item = TemplateItem(
+                    type = int(entry['type']),
+                    title = entry['title'],
+                    platform = entry['platform'],
+                    description = entry.get('description', ''),
+                    name = entry.get('name', entry['title'].lower()),
+                    logo = entry.get('logo', ''), # default logo here!
+                    image = entry.get('image', ''),
+                    notes = entry.get('notes', ''),
+                    categories = entry.get('categories', ''),
+                    restart_policy = entry.get('restart_policy'),
+                    ports = ports,
+                    volumes = entry.get('volumes'),
+                    env = entry.get('env'),
+                )
+                items.append(item)
     except Exception as exc:
-        db.session.rollback()
+        print('Template update failed. ERR_001', exc)
         raise
+    else:
+        db.session.delete(template)
+        db.session.commit()
+
+        make_transient(template)
+        template.updated_at = datetime.utcnow()
+        template.items = items
+
+        try:
+            db.session.add(template)
+            db.session.commit()
+            print(f"Template \"{template.title}\" updated successfully.")
+        except Exception as exc:
+            db.session.rollback()
+            print('Template update failed. ERR_002', exc)
+            raise
 
     template_schema = TemplateSchema()
     data = template_schema.dump(template)

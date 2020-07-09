@@ -4,6 +4,25 @@ from marshmallow.validate import (
     Length
 )
 
+class TemplateItemSchema(ma.SQLAlchemySchema):
+    id = ma.Int(
+        dump_only=True)
+
+    type = ma.Int()
+    title = ma.Str(
+        validate=Length(min=1, max=255))
+    platform = ma.Str(
+        validate=Length(min=1, max=255))
+    description = ma.Str()
+    name = ma.Str(
+        validate=Length(min=1, max=255))
+    logo = ma.Str(
+        validate=Length(min=1, max=255))
+    notes = ma.Str()
+    categories = ma.List(ma.Str())
+
+
+
 class TemplateSchema(ma.SQLAlchemySchema):
     # perhapse use auto_field
     id = ma.Int(
@@ -17,3 +36,5 @@ class TemplateSchema(ma.SQLAlchemySchema):
         validate=Length(min=1, max=255))
     url = ma.Url(
         required=True)
+    items = ma.Nested(
+        TemplateItemSchema, many=True)
