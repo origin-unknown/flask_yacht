@@ -21,6 +21,7 @@ from flask_jwt_extended import (
 )
 from datetime import datetime
 import json
+from sqlalchemy import or_
 from sqlalchemy.orm.session import make_transient
 from sqlalchemy.exc import IntegrityError
 import urllib.request
@@ -43,7 +44,7 @@ blueprint = Blueprint(
 # @use_kwargs({'per_page': fields.Int(missing=10)}, locations=('query',))
 # ...
 def index():
-    templates = Template.query.all()
+    templates = Template.query.order_by(Template.title).all()
     templates_schema = TemplateSchema(many=True)
     data = templates_schema.dump(templates, many=True)
     return jsonify({ 'data': data })
@@ -72,18 +73,19 @@ def create(args):
       --data '{"title":"First Template","url":"https://host.local/template.json"}' \
       http://127.0.0.1:5000/api/templates/
     '''
+
+    template = Template.query.filter(or_(
+        Template.title==args['title'],
+        Template.url==args['url'])).one_or_none()
+    if template: abort(409)
+
     template = Template(**args)
-    try:
-        db.session.add(template)
-        db.session.commit()
-    except IntegrityError as err:
-        # TODO raises IntegrityError on duplicates (uniqueness)
-        #       status
-        pass
+    db.session.add(template)
+    db.session.commit()
 
     template_schema = TemplateSchema()
     data = template_schema.dump(template)
-    return jsonify({ 'data': data })
+    return jsonify({ 'data': data }), 201
 
 # endpoint: edit
 #  methods: PUT
@@ -102,14 +104,11 @@ def delete(id):
     -X "DELETE" \
     http://127.0.0.1:5000/api/templates/2
     '''
-    # check error code and return json error
-    try:
-        template = Template.query.get_or_404(id)
-        db.session.delete(template)
-        db.session.commit()
-    except IntegrityError as err:
-        abort(400, { 'error': 'Bad Request' })
 
+    template = Template.query.get_or_404(id)
+    db.session.delete(template)
+    db.session.commit()
+    
     template_schema = TemplateSchema()
     data = template_schema.dump(template)
     return jsonify({ 'data': data})

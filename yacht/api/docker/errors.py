@@ -40,6 +40,9 @@ def register_errorhandlers(blueprint):
 
     # werkzeug.exceptions.RequestTimeout 408
     # werkzeug.exceptions.Conflict       409
+    @blueprint.errorhandler(409)
+    def gone(error):
+        return make_response(jsonify({'error': 'Conflict'}), 409)
 
     # werkzeug.exceptions.Gone
     @blueprint.errorhandler(410)
