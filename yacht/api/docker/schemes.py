@@ -23,10 +23,10 @@ class TemplateItemSchema(ma.SQLAlchemySchema):
     notes = ma.Str()
     categories = ma.List(ma.Str())
     # configuration data
-    restart_policy = ma.Str()
-    ports = ma.Raw()
-    volumes = ma.Raw()
-    env = ma.Raw()
+    restart_policy = ma.Str()   # perhaps dump_only=True
+    ports = ma.Raw()            # perhaps dump_only=True
+    volumes = ma.Raw()          # perhaps dump_only=True
+    env = ma.Raw()              # perhaps dump_only=True
 
 
 class TemplateSchema(ma.SQLAlchemySchema):

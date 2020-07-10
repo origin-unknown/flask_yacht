@@ -42,9 +42,11 @@ def register_blueprints(app):
     from .api.auth import create_module as api_auth_create_module
     from .api.main import create_module as api_main_create_module
     from .api.docker.templates import create_module as api_docker_templates_create_module
+    from .api.docker.template_items import create_module as api_docker_template_items_create_module
     api_auth_create_module(app, url_prefix='/api')
     api_main_create_module(app, url_prefix='/api')
     api_docker_templates_create_module(app, url_prefix='/api/templates')
+    api_docker_template_items_create_module(app, url_prefix='/api/apps')
 
 def register_endpoints(app):
     @app.route('/')
