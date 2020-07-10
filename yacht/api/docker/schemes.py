@@ -8,6 +8,8 @@ class TemplateItemSchema(ma.SQLAlchemySchema):
     id = ma.Int(
         dump_only=True)
 
+    template_id=ma.Int(
+        required=True)
     type = ma.Int()
     title = ma.Str(
         validate=Length(min=1, max=255))
@@ -20,7 +22,11 @@ class TemplateItemSchema(ma.SQLAlchemySchema):
         validate=Length(min=1, max=255))
     notes = ma.Str()
     categories = ma.List(ma.Str())
-
+    # configuration data
+    restart_policy = ma.Str()
+    ports = ma.Raw()
+    volumes = ma.Raw()
+    env = ma.Raw()
 
 
 class TemplateSchema(ma.SQLAlchemySchema):
@@ -37,4 +43,5 @@ class TemplateSchema(ma.SQLAlchemySchema):
     url = ma.Url(
         required=True)
     items = ma.Nested(
-        TemplateItemSchema, many=True)
+        TemplateItemSchema, many=True,
+        exclude=('template_id','restart_policy','ports','volumes','env'))
