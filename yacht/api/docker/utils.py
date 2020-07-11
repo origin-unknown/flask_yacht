@@ -1,6 +1,6 @@
 import re
 
-REGEXP_PORT_ASSIGN = r'^(?:(?:\d{1,5}\:)?\d{1,5})|\:d{1,5}/(?:tcp|udp)$'
+REGEXP_PORT_ASSIGN = r'^(?:(?:\d{1,5}\:)?\d{1,5})|(?:\:\d{1,5})/(?:tcp|udp)$'
 
 # Input Format:
 # [

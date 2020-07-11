@@ -4,7 +4,8 @@ from ..models import (
 )
 from ..utils import conv_ports2dict
 from ..schemes import (
-    TemplateItemSchema
+    TemplateItemSchema,
+    DeploySchema
 )
 
 from flask import Blueprint
@@ -55,3 +56,19 @@ def show(id):
         return jsonify({ 'data': data })
     except IntegrityError as err:
         abort(400, { 'error': 'Bad Request' })
+
+# ---
+
+from webargs import fields, validate
+
+@blueprint.route('/<int:id>/deploy', methods=['POST'])
+@use_args(DeploySchema(), location='json')
+def deploy(args, id):
+    '''curl -H "Content-Type: application/json" -X POST \
+    -d '{"title":"Untitled", "image":"my:image", "ports":[{"proto": "tcp", "hport":2020}]}' \
+    http://127.0.0.1:5000/api/apps/1/deploy
+    '''
+    print(args, id)
+    # print(id, title, image)
+    # print(args, kwargs)
+    return jsonify(data = '')

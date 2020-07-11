@@ -45,8 +45,10 @@ blueprint = Blueprint(
 # ...
 def index():
     templates = Template.query.order_by(Template.title).all()
-    templates_schema = TemplateSchema(many=True)
-    data = templates_schema.dump(templates, many=True)
+    try:
+        templates_schema = TemplateSchema(many=True)
+        data = templates_schema.dump(templates, many=True)
+    except Exception as exc: print(exc)
     return jsonify({ 'data': data })
 
 # endpoint: show
@@ -108,7 +110,7 @@ def delete(id):
     template = Template.query.get_or_404(id)
     db.session.delete(template)
     db.session.commit()
-    
+
     template_schema = TemplateSchema()
     data = template_schema.dump(template)
     return jsonify({ 'data': data})
