@@ -22,6 +22,7 @@ def create_app(env=os.getenv('FLASK_ENV', 'production')):
         SECRET_KEY=b'\x09|\t\xe8V\xdb\x974{\x1aZz\xe9G\xea\x95\\xd6\xfa\xcf`\x7f\\*\n',
         SQLALCHEMY_DATABASE_URI='sqlite:///'+os.path.join(app.instance_path, f'{env}.sqlite'),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        # JWT_ACCESS_TOKEN_EXPIRES=10
     )
 
     try:

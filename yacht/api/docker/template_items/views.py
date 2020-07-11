@@ -1,6 +1,5 @@
 from .... import db
 from ..models import (
-    Template,
     TemplateItem
 )
 from ..utils import conv_ports2dict
@@ -21,7 +20,6 @@ from flask_jwt_extended import (
 )
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
-from webargs import fields, validate
 from webargs.flaskparser import use_args, use_kwargs
 from werkzeug.exceptions import MethodNotAllowed, UnprocessableEntity
 
