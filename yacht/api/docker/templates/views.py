@@ -1,12 +1,12 @@
 from .... import db
-from ..models import (
+from ...models import (
     Template,
     TemplateItem
 )
-from ..utils import conv_ports2dict
-from ..schemes import (
+from ...schemes import (
     TemplateSchema
 )
+from ..utils import conv_ports2dict
 
 from flask import Blueprint
 from flask import (

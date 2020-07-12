@@ -9,7 +9,7 @@ from alembic import op
 import sqlalchemy as sa
 
 from yacht import db
-from yacht.api.docker.models import Template
+from yacht.api.models import Template
 
 
 # revision identifiers, used by Alembic.
