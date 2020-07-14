@@ -38,18 +38,32 @@ class PortSchema(ma.Schema):
         validate=validate.OneOf(['tcp','udp'])
     )
 
-class Volumes(ma.Schema):
-    pass
+class VolumesSchema(ma.Schema):
+    container = ma.Str(
+        required=True
+    )
+    bind = ma.Str(
+        required=True
+    )
 
 class EnvSchema(ma.Schema):
-    pass
+    label = ma.Str(
+        required=True
+    )
+    default = ma.Str(
+        required=True
+    )
 
 class DeploySchema(ma.Schema):
     title = ma.Str(required=True)
     image = ma.Str(required=True)
+    restart_policy = ma.Str(
+        required=True,
+        validate=validate.OneOf(['always','on-failure', 'unless-stopped'])
+    )
     ports = ma.List(ma.Nested(PortSchema))
-    # volumes = ma.List()
-    # env = ma.List()
+    volumes = ma.List(ma.Nested(VolumesSchema))
+    env = ma.List(ma.Nested(EnvSchema))
 
 
 
