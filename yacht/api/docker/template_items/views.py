@@ -55,7 +55,7 @@ def show(id):
         data = template_item_schema.dump(template_item)
         return jsonify({ 'data': data })
     except IntegrityError as err:
-        abort(400, { 'error': 'Bad Request' })
+        abort(400)
 
 # ---
 

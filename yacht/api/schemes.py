@@ -53,6 +53,9 @@ class EnvSchema(ma.Schema):
     default = ma.Str(
         required=True
     )
+    # not required
+    # exclude later, but it's nested in raw json data
+    name = ma.Str()
 
 class DeploySchema(ma.Schema):
     title = ma.Str(required=True)

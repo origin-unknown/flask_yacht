@@ -62,7 +62,7 @@ def show(id):
         data = template_schema.dump(template)
         return jsonify({ 'data': data })
     except IntegrityError as err:
-        abort(400, { 'error': 'Bad Request' })
+        abort(400)
 
 # endpoint: create
 #  methods: POST
