@@ -33,6 +33,8 @@ def upgrade():
     sa.Column('ports', sa.JSON(), nullable=True),
     sa.Column('volumes', sa.JSON(), nullable=True),
     sa.Column('env', sa.JSON(), nullable=True),
+    sa.Column('sysctls', sa.JSON(), nullable=True),
+    sa.Column('cap_add', sa.JSON(), nullable=True),
     sa.Column('template_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['template_id'], ['templates.id'], ),
     sa.PrimaryKeyConstraint('id')

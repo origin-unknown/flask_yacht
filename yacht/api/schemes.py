@@ -21,7 +21,15 @@ class TemplateSchema(ma.SQLAlchemyAutoSchema):
 
     items = ma.Nested(
         TemplateItemSchema, many=True,
-            exclude=('template_id','restart_policy','ports','volumes','env'))
+            exclude=(
+                'template_id',
+                'restart_policy',
+                'ports',
+                'volumes',
+                'env',
+                'sysctls',
+                'cap_add'
+            ))
 
 
 
@@ -57,6 +65,14 @@ class EnvSchema(ma.Schema):
     # exclude later, but it's nested in raw json data
     name = ma.Str()
 
+class SysctlsSchema(ma.Schema):
+    name = ma.Str(
+        required=True
+    )
+    value = ma.Str(
+        required=True
+    )
+
 class DeploySchema(ma.Schema):
     title = ma.Str(required=True)
     image = ma.Str(required=True)
@@ -67,8 +83,8 @@ class DeploySchema(ma.Schema):
     ports = ma.List(ma.Nested(PortSchema))
     volumes = ma.List(ma.Nested(VolumesSchema))
     env = ma.List(ma.Nested(EnvSchema))
-
-
+    # sysctls = ma.List(ma.Nested(SysctlsSchema))
+    # cap_add = ma.List(ma.Str())
 
 
 

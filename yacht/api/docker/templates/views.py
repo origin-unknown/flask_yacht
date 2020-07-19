@@ -6,7 +6,7 @@ from ...models import (
 from ...schemes import (
     TemplateSchema
 )
-from ..utils import conv_ports2dict
+from ..utils import conv_ports2dict, conv_sysctls2dict
 
 from flask import Blueprint
 from flask import (
@@ -131,7 +131,9 @@ def refresh(id):
             for entry in json.load(fp):
 
                 ports = conv_ports2dict(entry.get('ports', []))
-
+                sysctls = conv_sysctls2dict(entry.get('sysctls', []))
+                print(sysctls)
+                
                 item = TemplateItem(
                     type = int(entry['type']),
                     title = entry['title'],
@@ -144,8 +146,10 @@ def refresh(id):
                     categories = entry.get('categories', ''),
                     restart_policy = entry.get('restart_policy'),
                     ports = ports,
-                    volumes = entry.get('volumes'),
-                    env = entry.get('env'),
+                    volumes = entry.get('volumes', []),
+                    env = entry.get('env', []),
+                    sysctls = sysctls,
+                    cap_add = entry.get('cap_add', [])
                 )
                 items.append(item)
     except Exception as exc:
