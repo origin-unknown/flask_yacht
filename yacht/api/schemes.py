@@ -64,13 +64,14 @@ class EnvSchema(ma.Schema):
     # not required
     # exclude later, but it's nested in raw json data
     name = ma.Str()
+    description = ma.Str()
 
 class SysctlsSchema(ma.Schema):
     name = ma.Str(
-        required=True
+        # required=True
     )
     value = ma.Str(
-        required=True
+        # required=True
     )
 
 class DeploySchema(ma.Schema):
@@ -83,8 +84,8 @@ class DeploySchema(ma.Schema):
     ports = ma.List(ma.Nested(PortSchema))
     volumes = ma.List(ma.Nested(VolumesSchema))
     env = ma.List(ma.Nested(EnvSchema))
-    # sysctls = ma.List(ma.Nested(SysctlsSchema))
-    # cap_add = ma.List(ma.Str())
+    sysctls = ma.List(ma.Nested(SysctlsSchema))
+    cap_add = ma.List(ma.Str())
 
 
 
