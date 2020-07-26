@@ -4,7 +4,8 @@
 import os, sys
 from flask import Flask
 from flask import (
-    jsonify
+    jsonify,
+    render_template
 )
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -17,6 +18,8 @@ migrate = Migrate()
 def create_app(env=os.getenv('FLASK_ENV', 'production')):
     app = Flask(__name__,
         instance_relative_config=True,
+        static_folder = "./dist/static",
+        template_folder = "./dist/templates"
     )
     app.config.from_mapping(
         SECRET_KEY=b'\x09|\t\xe8V\xdb\x974{\x1aZz\xe9G\xea\x95\\xd6\xfa\xcf`\x7f\\*\n',
@@ -52,4 +55,5 @@ def register_blueprints(app):
 def register_endpoints(app):
     @app.route('/')
     def index():
-        return '<center><a href="http://127.0.0.1:8080/">Vue-Yacht</a></center><iframe src="http://127.0.0.1:8080/" style="display: block; background: #000; border: none; height: 100vh; width: 100vw;"></iframe>'
+        # return '<center><a href="http://127.0.0.1:8080/">Vue-Yacht</a></center><iframe src="http://127.0.0.1:8080/" style="display: block; background: #000; border: none; height: 100vh; width: 100vw;"></iframe>'
+        return render_template('index.html')
