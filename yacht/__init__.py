@@ -5,7 +5,10 @@ import os, sys
 from flask import Flask
 from flask import (
     jsonify,
-    render_template
+    redirect,
+    render_template,
+    request,
+    url_for
 )
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -43,6 +46,9 @@ def create_app(env=os.getenv('FLASK_ENV', 'production')):
     return app
 
 def register_blueprints(app):
+    from .config import create_module as config_create_module
+    config_create_module(app)
+
     from .api.auth import create_module as api_auth_create_module
     from .api.main import create_module as api_main_create_module
     from .api.docker.templates import create_module as api_docker_templates_create_module
@@ -55,5 +61,4 @@ def register_blueprints(app):
 def register_endpoints(app):
     @app.route('/')
     def index():
-        # return '<center><a href="http://127.0.0.1:8080/">Vue-Yacht</a></center><iframe src="http://127.0.0.1:8080/" style="display: block; background: #000; border: none; height: 100vh; width: 100vw;"></iframe>'
         return render_template('index.html')
