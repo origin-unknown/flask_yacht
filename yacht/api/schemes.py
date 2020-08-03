@@ -35,6 +35,8 @@ class TemplateSchema(ma.SQLAlchemyAutoSchema):
 
 class PortSchema(ma.Schema):
     cport = ma.Int(
+        allow_none=True,
+        required=False,
         validate=validate.Range(min=0, max=65535)
     )
     hport = ma.Int(
