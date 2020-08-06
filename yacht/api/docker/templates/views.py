@@ -45,10 +45,8 @@ blueprint = Blueprint(
 # ...
 def index():
     templates = Template.query.order_by(Template.title).all()
-    try:
-        templates_schema = TemplateSchema(many=True)
-        data = templates_schema.dump(templates, many=True)
-    except Exception as exc: print(exc)
+    templates_schema = TemplateSchema(many=True)
+    data = templates_schema.dump(templates, many=True)
     return jsonify({ 'data': data })
 
 # endpoint: show
@@ -56,13 +54,10 @@ def index():
 #   errors: 200 (OK) | 404 (Not Found)
 @blueprint.route('/<int:id>')
 def show(id):
-    try:
-        template = Template.query.get_or_404(id)
-        template_schema = TemplateSchema()
-        data = template_schema.dump(template)
-        return jsonify({ 'data': data })
-    except IntegrityError as err:
-        abort(400)
+    template = Template.query.get_or_404(id)
+    template_schema = TemplateSchema()
+    data = template_schema.dump(template)
+    return jsonify({ 'data': data })
 
 # endpoint: create
 #  methods: POST
@@ -133,7 +128,7 @@ def refresh(id):
                 ports = conv_ports2dict(entry.get('ports', []))
                 sysctls = conv_sysctls2dict(entry.get('sysctls', []))
                 print(sysctls)
-                
+
                 item = TemplateItem(
                     type = int(entry['type']),
                     title = entry['title'],

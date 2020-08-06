@@ -49,13 +49,10 @@ def index():
 #   errors: 200 (OK) | 404 (Not Found)
 @blueprint.route('/<int:id>')
 def show(id):
-    try:
-        template_item = TemplateItem.query.get_or_404(id)
-        template_item_schema = TemplateItemSchema()
-        data = template_item_schema.dump(template_item)
-        return jsonify({ 'data': data })
-    except IntegrityError as err:
-        abort(400)
+    template_item = TemplateItem.query.get_or_404(id)
+    template_item_schema = TemplateItemSchema()
+    data = template_item_schema.dump(template_item)
+    return jsonify({ 'data': data })
 
 # ---
 
